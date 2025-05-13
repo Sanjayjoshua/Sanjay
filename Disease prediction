@@ -1,0 +1,38 @@
+import numpy as np
+import pandas as pd
+from sklearn.model_selection import train_test_split
+from sklearn.preprocessing import StandardScaler
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import accuracy_score
+
+# Load dataset (Replace with real patient data)
+data = pd.read_csv("patient_data.csv")  # Ensure this dataset contains relevant health indicators
+
+# Feature selection (example columns)
+X = data[['age', 'blood_pressure', 'cholesterol', 'glucose_level']]
+y = data['disease']  # Target variable (binary: 1 for disease, 0 for no disease)
+
+# Split data into training and testing sets
+X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+# Scale features for better model performance
+scaler = StandardScaler()
+X_train = scaler.fit_transform(X_train)
+X_test = scaler.transform(X_test)
+
+# Train logistic regression model
+model = LogisticRegression()
+model.fit(X_train, y_train)
+
+# Make predictions
+y_pred = model.predict(X_test)
+
+# Evaluate model accuracy
+accuracy = accuracy_score(y_test, y_pred)
+print(f"Model Accuracy: {accuracy * 100:.2f}%")
+
+# Example patient prediction
+new_patient = np.array([[45, 120, 200, 140]])  # Replace with actual patient values
+new_patient_scaled = scaler.transform(new_patient)
+prediction = model.predict(new_patient_scaled)
+print("Disease Prediction:", "Positive" if prediction[0] else "Negative")
